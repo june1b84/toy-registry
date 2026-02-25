@@ -316,12 +316,13 @@ input.edit-input {
 }
 
 .toy-name {
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-size: 0.95rem;
+    font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+    /* バッジとの間隔を広げる */
 }
 
 .toy-owners {
@@ -330,16 +331,25 @@ input.edit-input {
 }
 
 .mini-badge {
-    padding: 0.1rem 0.4rem;
-    border-radius: 0.4rem;
-    font-size: 0.625rem;
-    font-weight: 700;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 800;
     color: #fff;
-    opacity: 0.3;
+    opacity: 0.15;
+    /* 非アクティブ時はかなり薄く */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
 }
 
 .mini-badge.active {
     opacity: 1;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
 }
 
 /* Buttons */
