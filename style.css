@@ -398,19 +398,19 @@ input.edit-input {
 }
 
 .btn-success {
-    background: var(--success);
-    color: #fff;
+    background: var(--success) !important;
+    color: #fff !important;
     font-weight: 700;
 }
 
 .btn-danger {
-    background: #ef4444;
-    color: #fff;
+    background: #ef4444 !important;
+    color: #fff !important;
     font-weight: 700;
 }
 
 .btn-danger:hover {
-    background: #dc2626;
+    background: #dc2626 !important;
     box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
 }
 
@@ -611,51 +611,48 @@ h1 {
 /* Mall Links Wrapper */
 .mall-links-wrapper {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 0.75rem;
-    margin: 1rem 0;
+    margin: 0.5rem 0;
 }
 
-.mall-btn {
+.mall-mini-btn {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1.25rem;
-    border-radius: 1rem;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
     text-decoration: none;
-    font-weight: 700;
-    font-size: 0.9rem;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.mall-btn:hover {
+.mall-mini-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.mall-btn img {
-    width: 20px;
-    height: 20px;
+.mall-mini-btn img {
+    width: 18px;
+    height: 18px;
     object-fit: contain;
-    border-radius: 4px;
+    border-radius: 2px;
 }
 
 /* Mall Specific Colors */
-.mall-btn.yahoo {
-    background: #fff;
-    color: #ff0033;
+.mall-mini-btn.yahoo {
+    background: #f8fafc;
+    /* 少し明るめでアイコンを目立たせる */
 }
 
-.mall-btn.amazon {
+.mall-mini-btn.amazon {
     background: #232f3e;
-    color: #ff9900;
 }
 
-.mall-btn.rakuten {
+.mall-mini-btn.rakuten {
     background: #bf0000;
-    color: #fff;
 }
 
 /* Affiliate Notice (Optional/Subtle) */

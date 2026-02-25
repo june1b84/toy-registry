@@ -255,19 +255,16 @@ class ToyRegistry {
 
         malls.forEach(mall => {
             const config = this.AFFILIATE[mall.id];
-            // もしもアフィリエイトのリンク生成
-            // 形式: https://af.moshimo.com/af/c/click?a_id=[A_ID]&p_id=[P_ID]&pc_id=[PC_ID]&pl_id=[PL_ID]&url=[ENCODED_URL]
-
             const finalUrl = `https://af.moshimo.com/af/c/click?a_id=${config.a_id}&p_id=${config.p_id}&pc_id=${config.pc_id}&pl_id=${config.pl_id}&url=${encodeURIComponent(mall.baseUrl)}`;
 
             const link = document.createElement('a');
             link.href = finalUrl;
             link.target = '_blank';
             link.rel = 'noopener noreferrer';
-            link.className = `mall-btn ${mall.id}`;
+            link.className = `mall-mini-btn ${mall.id}`;
+            link.title = mall.name; // ホバー時に名前を表示
             link.innerHTML = `
                 <img src="${mall.icon}" alt="${mall.name}" onerror="this.src='https://placehold.jp/16/ffffff/333333/16x16.png?text=${mall.name[0]}'">
-                <span>${mall.name}</span>
             `;
             wrapper.appendChild(link);
         });
