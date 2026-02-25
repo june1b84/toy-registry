@@ -366,14 +366,31 @@ input.edit-input {
     color: var(--text-primary);
 }
 
-.btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.2);
+.btn-s.result-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.result-actions button {
+    flex: 1;
 }
 
 .btn-success {
     background: var(--success);
     color: #fff;
-    width: 100%;
+    font-weight: 700;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: #fff;
+    font-weight: 700;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
 }
 
 .btn-icon {

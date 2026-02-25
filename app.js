@@ -34,6 +34,7 @@ class ToyRegistry {
             toyList: document.getElementById('toy-list'),
             closeResult: document.getElementById('close-result'),
             addToyBtn: document.getElementById('add-toy-btn'),
+            deleteToyBtn: document.getElementById('delete-toy-btn'),
             toySearch: document.getElementById('toy-search'),
             manageChildrenBtn: document.getElementById('manage-children-btn'),
             childrenModal: document.getElementById('children-modal'),
@@ -95,6 +96,11 @@ class ToyRegistry {
         // リストに追加ボタン
         this.elements.addToyBtn.addEventListener('click', () => {
             this.saveCurrentResult();
+        });
+
+        // 削除ボタン
+        this.elements.deleteToyBtn.addEventListener('click', () => {
+            this.deleteCurrentToy();
         });
 
         // おもちゃ検索
@@ -172,6 +178,7 @@ class ToyRegistry {
         this.elements.productJan.innerText = jan;
         this.elements.productImage.src = "";
         this.elements.addToyBtn.disabled = true; // 検索中はボタン無効化
+        this.elements.deleteToyBtn.classList.add('hidden'); // 検索中は削除ボタン隠す
 
         // APIから情報取得
         const info = await this.fetchProductInfo(jan);
@@ -365,6 +372,23 @@ class ToyRegistry {
         this.renderToyList();
         this.elements.resultPanel.classList.add('hidden');
         this.showNotification("保存しました！");
+    }
+
+    deleteCurrentToy() {
+        if (!this.currentTempJan) return;
+
+        const jan = this.currentTempJan;
+        const toy = this.data.toys.find(t => t.jan === jan);
+
+        if (!toy) return;
+
+        if (confirm(`「${toy.name}」をリストから削除してよろしいですか？`)) {
+            this.data.toys = this.data.toys.filter(t => t.jan !== jan);
+            this.saveData();
+            this.renderToyList();
+            this.elements.resultPanel.classList.add('hidden');
+            this.showNotification("削除しました");
+        }
     }
 
     // --- 一覧描画 ---
