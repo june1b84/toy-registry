@@ -87,12 +87,20 @@ h2 {
 /* Scanner */
 #reader-container {
     width: 100%;
+    aspect-ratio: 16 / 9;
+    /* 縦幅を抑えるために強制設定 */
     overflow: hidden;
     border-radius: 1rem;
     background: #000;
     margin-bottom: 1.25rem;
     position: relative;
-    /* aspect-ratioはJS側の設定に任せる */
+}
+
+#reader video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    /* コンテナいっぱいに表示 */
 }
 
 #reader {
