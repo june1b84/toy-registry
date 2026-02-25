@@ -565,48 +565,106 @@ h1 {
     }
 }
 
-/* Yahoo! Shopping Link */
-.yahoo-link-btn {
-    display: inline-flex;
+/* Mall Links Wrapper */
+.mall-links-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.mall-btn {
+    display: flex;
     align-items: center;
-    gap: 0.5rem;
-    background: #fff;
-    color: #333;
-    padding: 0.6rem 1rem;
-    border-radius: 2rem;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 1rem;
     text-decoration: none;
-    font-size: 0.85rem;
     font-weight: 700;
-    margin: 0.5rem 0 1rem 0;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    font-size: 0.9rem;
     transition: all 0.2s ease;
-    border: 1px solid #ddd;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.yahoo-link-btn:hover {
+.mall-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-    background: #fdfdfd;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
-.yahoo-link-btn img {
-    height: 18px;
-    width: auto;
+.mall-btn img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    border-radius: 4px;
 }
 
-.yahoo-link-btn span {
+/* Mall Specific Colors */
+.mall-btn.yahoo {
+    background: #fff;
     color: #ff0033;
-    /* Yahoo Red */
+}
+
+.mall-btn.amazon {
+    background: #232f3e;
+    color: #ff9900;
+}
+
+.mall-btn.rakuten {
+    background: #bf0000;
+    color: #fff;
+}
+
+/* Affiliate Settings Modal Styles */
+.settings-help {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1.5rem;
+}
+
+.settings-group {
+    margin-bottom: 1.25rem;
+}
+
+.settings-group label {
+    display: block;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+}
+
+.settings-group input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-family: inherit;
+}
+
+.settings-tip {
+    background: rgba(56, 189, 248, 0.1);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-top: 1.5rem;
+    border-left: 3px solid var(--primary);
+}
+
+.settings-tip p {
+    font-size: 0.7rem;
+    margin: 0.25rem 0;
+    color: rgba(255, 255, 255, 0.6);
 }
 
 /* Affiliate Notice (Optional/Subtle) */
 #product-link-container::after {
-    content: "※価格や在庫をYahoo!ショッピングで確認できます";
+    content: "※各モールの検索結果を確認できます";
     display: block;
     font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.5);
-    margin-top: -0.25rem;
-    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 0.5rem;
+    text-align: center;
 }
 
 /* Responsive */

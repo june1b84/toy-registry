@@ -6,7 +6,12 @@ class ToyRegistry {
     constructor() {
         this.data = {
             children: ["りつ", "れい", "そう"],
-            toys: []
+            toys: [],
+            affiliate: {
+                amazon: "",
+                rakuten: "",
+                yahoo: ""
+            }
         };
         this.html5QrCode = null;
         this.scannerActive = false;
@@ -37,7 +42,16 @@ class ToyRegistry {
             exportDataBtn: document.getElementById('export-data-btn'),
             importDataBtn: document.getElementById('import-data-btn'),
             importFile: document.getElementById('import-file'),
-            notificationContainer: document.getElementById('notification-container')
+            notificationContainer: document.getElementById('notification-container'),
+            // アフィリエイト関連
+            affiliateSettingsBtn: document.getElementById('affiliate-settings-btn'),
+            affiliateModal: document.getElementById('affiliate-modal'),
+            closeAffiliateModal: document.getElementById('close-affiliate-modal'),
+            saveAffiliateBtn: document.getElementById('save-affiliate-btn'),
+            amazonIdInput: document.getElementById('affiliate-amazon-id'),
+            rakutenIdInput: document.getElementById('affiliate-rakuten-id'),
+            yahooIdInput: document.getElementById('affiliate-yahoo-id'),
+            productLinkContainer: document.getElementById('product-link-container')
         };
 
         this.init();
@@ -57,9 +71,10 @@ class ToyRegistry {
         if (saved) {
             try {
                 this.data = JSON.parse(saved);
-                // 互換性チェック: 古いデータにchildrenがない場合
+                // 互換性チェック
                 if (!this.data.children) this.data.children = ["りつ", "れい", "そう"];
                 if (!this.data.toys) this.data.toys = [];
+                if (!this.data.affiliate) this.data.affiliate = { amazon: "", rakuten: "", yahoo: "" };
             } catch (e) {
                 console.error("データの読み込みに失敗しました", e);
             }
@@ -111,6 +126,31 @@ class ToyRegistry {
         this.elements.exportDataBtn.addEventListener('click', () => this.exportData());
         this.elements.importDataBtn.addEventListener('click', () => this.elements.importFile.click());
         this.elements.importFile.addEventListener('change', (e) => this.importData(e));
+
+        // アフィリエイト設定
+        this.elements.affiliateSettingsBtn.addEventListener('click', () => this.openAffiliateModal());
+        this.elements.closeAffiliateModal.addEventListener('click', () => {
+            this.elements.affiliateModal.classList.add('hidden');
+        });
+        this.elements.saveAffiliateBtn.addEventListener('click', () => this.saveAffiliateSettings());
+    }
+
+    openAffiliateModal() {
+        this.elements.amazonIdInput.value = this.data.affiliate.amazon || "";
+        this.elements.rakutenIdInput.value = this.data.affiliate.rakuten || "";
+        this.elements.yahooIdInput.value = this.data.affiliate.yahoo || "";
+        this.elements.affiliateModal.classList.remove('hidden');
+    }
+
+    saveAffiliateSettings() {
+        this.data.affiliate = {
+            amazon: this.elements.amazonIdInput.value.trim(),
+            rakuten: this.elements.rakutenIdInput.value.trim(),
+            yahoo: this.elements.yahooIdInput.value.trim()
+        };
+        this.saveData();
+        this.elements.affiliateModal.classList.add('hidden');
+        this.showNotification("アフィリエイト設定を保存しました");
     }
 
     // --- スキャン機能 ---
@@ -172,18 +212,8 @@ class ToyRegistry {
         this.renderProductNameEditor(info.name);
         this.elements.productImage.src = info.image;
 
-        // 商品詳細リンクの表示（アフィリエイト対応可能な導線）
-        const linkContainer = document.getElementById('product-link-container');
-        if (info.url) {
-            linkContainer.innerHTML = `
-                <a href="${info.url}" target="_blank" rel="noopener noreferrer" class="yahoo-link-btn">
-                    <img src="https://s.yimg.jp/c/logo/f/2.0/shopping_r_64_2x.png" alt="Yahoo!ショッピング">
-                    <span>Yahoo!ショッピングで見る</span>
-                </a>
-            `;
-        } else {
-            linkContainer.innerHTML = '';
-        }
+        // マルチモール・詳細リンクの表示
+        this.renderProductLinks(jan, info.url);
 
         // 所有者テーブルの描画
         const initialOwners = existingToy ? { ...existingToy.owners } : {};
@@ -197,6 +227,73 @@ class ToyRegistry {
         if (existingToy) {
             this.showNotification("既にリストにあるおもちゃです！");
         }
+    }
+
+    renderProductLinks(jan, yahooDirectUrl) {
+        const container = this.elements.productLinkContainer;
+        container.innerHTML = '';
+
+        const malls = [
+            {
+                name: 'Yahoo!ショッピング',
+                id: 'yahoo',
+                color: '#ff0033',
+                icon: 'https://shopping.yahoo.co.jp/favicon.ico',
+                baseUrl: yahooDirectUrl || `https://shopping.yahoo.co.jp/search?p=${jan}`,
+                p_id: '1225' // もしもYahooプロモーションID (デフォルト例)
+            },
+            {
+                name: 'Amazon',
+                id: 'amazon',
+                color: '#ff9900',
+                icon: 'https://www.amazon.co.jp/favicon.ico',
+                baseUrl: `https://www.amazon.co.jp/s?k=${jan}`,
+                p_id: '116' // もしもAmazonプロモーションID (デフォルト例)
+            },
+            {
+                name: '楽天市場',
+                id: 'rakuten',
+                color: '#bf0000',
+                icon: 'https://www.rakuten.co.jp/favicon.ico',
+                baseUrl: `https://search.rakuten.co.jp/search/mall/${jan}/`,
+                p_id: '54' // もしも楽天プロモーションID (デフォルト例)
+            }
+        ];
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'mall-links-wrapper';
+
+        malls.forEach(mall => {
+            const userPId = this.data.affiliate[mall.id];
+            // IDが設定されている場合のみ表示（または全表示するかは好みだが、ユーザーの要望は選べるようにすること）
+            // ここでは設定されているものだけ、あるいは設定画面があることを考慮して全表示し、IDがあればアフィ化する
+
+            let finalUrl = mall.baseUrl;
+            if (userPId) {
+                // もしもアフィリエイトの簡易検索・通常リンク形式に変換
+                // 形式: https://af.moshimo.com/af/c/click?a_id=[A_ID]&p_id=[P_ID]&pc_id=54&m_id=[M_ID]&url=[ENCODED_URL]
+                // ※本来は m_id 等も必要だが、簡易的には検索ページへの誘導が主
+                // 今回はシンプルに、IDがある場合はそのIDをパラメータに含めるか、
+                // もしも側で生成された完成済みURLを模倣する形にする
+                // 実際には a_id (会員番号) が共通で p_id が各モール。
+                // 会員番号をa_idとして保存してもらい、p_idは各モール固定(Moshimo公式)と仮定
+                const aId = userPId; // ユーザーが入力したIDをaIdとして扱う
+                finalUrl = `https://af.moshimo.com/af/c/click?a_id=${aId}&p_id=${mall.p_id}&pc_id=54&m_id=1&url=${encodeURIComponent(mall.baseUrl)}`;
+            }
+
+            const link = document.createElement('a');
+            link.href = finalUrl;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.className = `mall-btn ${mall.id}`;
+            link.innerHTML = `
+                <img src="${mall.icon}" alt="${mall.name}" onerror="this.src='https://placehold.jp/16/ffffff/333333/16x16.png?text=${mall.name[0]}'">
+                <span>${mall.name}</span>
+            `;
+            wrapper.appendChild(link);
+        });
+
+        container.appendChild(wrapper);
     }
 
     renderProductNameEditor(name) {
