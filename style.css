@@ -92,7 +92,7 @@ h2 {
     background: #000;
     margin-bottom: 1.25rem;
     position: relative;
-    aspect-ratio: 4 / 3;
+    /* aspect-ratioはJS側の設定に任せる */
 }
 
 #reader {
@@ -169,21 +169,41 @@ input[type="text"]:focus {
     margin-bottom: 0.25rem;
 }
 
+.edit-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    width: 100%;
+}
+
+.edit-wrapper label {
+    font-size: 0.7rem;
+    color: var(--accent-blue);
+    font-weight: 700;
+    margin-left: 0.2rem;
+}
+
 .edit-input {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px dashed var(--accent-blue);
-    border-radius: 0.5rem;
-    padding: 0.25rem 0.5rem;
-    color: var(--text-primary);
-    font-size: 1rem;
-    font-weight: 600;
+    background: #fff;
+    /* 白背景にしてハッキリさせる */
+    border: 2px solid var(--accent-blue);
+    border-radius: 0.75rem;
+    padding: 0.8rem 1rem;
+    color: #1e293b;
+    /* 文字色は濃く */
+    font-size: 1.1rem;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    -webkit-appearance: none;
+    /* iOSのデフォルトスタイル無効化 */
 }
 
 .edit-input:focus {
     outline: none;
-    background: rgba(255, 255, 255, 0.1);
-    border-style: solid;
+    background: #f8fafc;
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 4px rgba(192, 132, 252, 0.3);
 }
 
 .jan-code {

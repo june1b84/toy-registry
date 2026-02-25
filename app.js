@@ -114,7 +114,22 @@ class ToyRegistry {
 
     initScanner() {
         this.html5QrCode = new Html5Qrcode("reader");
-        const config = { fps: 10, qrbox: { width: 250, height: 150 } };
+
+        // スマホ画面に合わせて枠を動的に計算（中央に配置）
+        const qrboxFunction = (viewfinderWidth, viewfinderHeight) => {
+            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+            const size = Math.floor(minEdge * 0.7);
+            return {
+                width: size,
+                height: Math.floor(size * 0.6) // 1Dバーコード向けに横長に
+            };
+        };
+
+        const config = {
+            fps: 10,
+            qrbox: qrboxFunction,
+            aspectRatio: 1.0 // 広角で捉える
+        };
 
         this.html5QrCode.start(
             { facingMode: "environment" },
@@ -165,12 +180,22 @@ class ToyRegistry {
     }
 
     renderProductNameEditor(name) {
-        // 商品名をクリックして編集できるUI
+        // 商品名をタップして編集できるUI
+        // iPhoneでのタップ誤爆を防ぐため、しっかりとした入力欄として描画
         this.elements.productName.innerHTML = `
-            <input type="text" id="product-name-edit" class="edit-input" value="${name}">
+            <div class="edit-wrapper">
+                <label for="product-name-edit">商品名（タップして編集）</label>
+                <input type="text" id="product-name-edit" class="edit-input" value="${name}" 
+                       placeholder="商品名を入力してください" enterkeyhint="done">
+            </div>
         `;
-        // input要素への参照を一時的に保持
         this.elements.productNameEdit = document.getElementById('product-name-edit');
+
+        // 自動でフォーカスを当てない（キーボードが勝手に出ると邪魔なため）
+        // タップした時は確実に反応するようにイベントを補強
+        this.elements.productNameEdit.addEventListener('touchstart', (e) => {
+            e.stopPropagation(); // 親要素のイベント干渉を防ぐ
+        });
     }
 
     async fetchProductInfo(jan) {
