@@ -118,14 +118,11 @@ class ToyRegistry {
     initScanner() {
         this.html5QrCode = new Html5Qrcode("reader");
 
-        // スマホ画面に合わせて枠を動的に計算（中央に配置）
+        // スキャン枠の設定（16:9の画面内でも中央に来るように計算）
         const qrboxFunction = (viewfinderWidth, viewfinderHeight) => {
-            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-            const size = Math.floor(minEdge * 0.7);
-            return {
-                width: size,
-                height: Math.floor(size * 0.6) // 1Dバーコード向けに横長に
-            };
+            const width = Math.floor(viewfinderWidth * 0.8);
+            const height = Math.floor(width * 0.5); // 横長バーコードに最適化
+            return { width, height };
         };
 
         const config = {

@@ -96,11 +96,15 @@ h2 {
     position: relative;
 }
 
-#reader video {
+#reader video,
+#reader canvas {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    /* コンテナいっぱいに表示 */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 #reader {
