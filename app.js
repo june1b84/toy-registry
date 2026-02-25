@@ -203,8 +203,9 @@ class ToyRegistry {
 
     async fetchProductInfo(jan) {
         // Yahoo!ショッピングAPI v3 (商品検索) を使用して情報を取得
-        // 注意: ブラウザからの直接実行（CORS）が制限される場合があります
-        const apiUrl = `https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid=${this.YAHOO_APP_ID}&jan_code=${jan}&results=1`;
+        // ブラウザのCORS制限を回避するため、allorigins.winプロキシを経由させる
+        const yahooUrl = `https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid=${this.YAHOO_APP_ID}&jan_code=${jan}&results=1`;
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooUrl)}`;
 
         try {
             // ローカルデモ用の特定JANコードはそのまま優先
@@ -214,10 +215,12 @@ class ToyRegistry {
             };
             if (mockData[jan]) return mockData[jan];
 
-            const response = await fetch(apiUrl, { mode: 'cors' });
-            if (!response.ok) throw new Error("APIレスポンスエラー");
+            const response = await fetch(proxyUrl);
+            if (!response.ok) throw new Error("プロキシサーバーエラー");
 
-            const data = await response.json();
+            const proxyData = await response.json();
+            // alloriginsは結果を文字列として 'contents' に入れるためパースが必要
+            const data = JSON.parse(proxyData.contents);
 
             if (data.hits && data.hits.length > 0) {
                 const item = data.hits[0];
@@ -227,10 +230,10 @@ class ToyRegistry {
                 };
             }
         } catch (error) {
-            console.warn("API連携に失敗しました（CORS制限またはネットワークエラー）。手動入力をご利用ください。", error);
+            console.warn("API連携に失敗しました（プロキシ経由でも制限またはNWエラー）。", error);
         }
 
-        // 取得失敗または制限時は汎用的な名前を返す（手書き編集でカバー）
+        // 取得失敗時は汎用的な名前を返す
         return {
             name: `商品情報 (JAN: ${jan})`,
             image: `https://placehold.jp/24/333333/ffffff/200x200.png?text=Toy+${jan}`
