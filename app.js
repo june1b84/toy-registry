@@ -10,7 +10,7 @@ class ToyRegistry {
         };
         this.html5QrCode = null;
         this.scannerActive = false;
-        
+
         // DOM要素
         this.elements = {
             reader: document.getElementById('reader'),
@@ -117,8 +117,8 @@ class ToyRegistry {
         const config = { fps: 10, qrbox: { width: 250, height: 150 } };
 
         this.html5QrCode.start(
-            { facingMode: "environment" }, 
-            config, 
+            { facingMode: "environment" },
+            config,
             (decodedText) => {
                 // スキャン成功
                 console.log(`Scan result: ${decodedText}`);
@@ -138,21 +138,20 @@ class ToyRegistry {
     async processJAN(jan) {
         // 重複チェック
         const existingToy = this.data.toys.find(t => t.jan === jan);
-        
+
         this.elements.resultPanel.classList.remove('hidden');
-        this.elements.productName.innerText = "検索中...";
+        this.elements.productName.innerHTML = '検索中...'; // innerTextからinnerHTMLに変更（後でinputを入れるため）
         this.elements.productJan.innerText = jan;
         this.elements.productImage.src = "";
 
-        // APIから情報取得（デモ用に模擬レスポンス）
+        // APIから情報取得
         const info = await this.fetchProductInfo(jan);
-        
-        this.elements.productName.innerText = info.name;
+
+        this.renderProductNameEditor(info.name);
         this.elements.productImage.src = info.image;
 
         // 所有者テーブルの描画
         const initialOwners = existingToy ? { ...existingToy.owners } : {};
-        // 現在の子供リストに含まれない所有者をクリアし、足りない場合はfalseで初期化
         const currentOwners = {};
         this.data.children.forEach(name => {
             currentOwners[name] = initialOwners[name] || false;
@@ -165,10 +164,19 @@ class ToyRegistry {
         }
     }
 
+    renderProductNameEditor(name) {
+        // 商品名をクリックして編集できるUI
+        this.elements.productName.innerHTML = `
+            <input type="text" id="product-name-edit" class="edit-input" value="${name}">
+        `;
+        // input要素への参照を一時的に保持
+        this.elements.productNameEdit = document.getElementById('product-name-edit');
+    }
+
     async fetchProductInfo(jan) {
         // 本来は Yahoo Shopping API や Open EAN などを叩く
         // ここではデモ用に、特定のJANコード以外は汎用的な名前を返す
-        
+
         // 擬似的な読み込み待ち
         await new Promise(r => setTimeout(r, 600));
 
@@ -188,19 +196,19 @@ class ToyRegistry {
 
     renderOwnerTable(owners, jan) {
         this.elements.ownerTableContainer.innerHTML = '';
-        
+
         this.data.children.forEach(name => {
             const row = document.createElement('div');
             row.className = 'owner-row';
-            
+
             const nameEl = document.createElement('span');
             nameEl.className = 'owner-name';
             nameEl.innerText = name;
-            
+
             const check = document.createElement('div');
             check.className = `owner-check ${owners[name] ? 'has' : ''}`;
             check.innerText = owners[name] ? '◯' : '✕';
-            
+
             check.addEventListener('click', () => {
                 owners[name] = !owners[name];
                 check.className = `owner-check ${owners[name] ? 'has' : ''}`;
@@ -219,12 +227,12 @@ class ToyRegistry {
 
     saveCurrentResult() {
         const jan = this.currentTempJan;
-        const name = this.elements.productName.innerText;
+        const name = this.elements.productNameEdit ? this.elements.productNameEdit.value : this.elements.productName.innerText;
         const image = this.elements.productImage.src;
         const owners = this.currentTempOwners;
 
         const existingIndex = this.data.toys.findIndex(t => t.jan === jan);
-        
+
         const toyData = {
             jan,
             name,
@@ -251,7 +259,7 @@ class ToyRegistry {
         this.elements.toyList.innerHTML = '';
         const search = filter.toLowerCase();
 
-        const filtered = this.data.toys.filter(t => 
+        const filtered = this.data.toys.filter(t =>
             t.name.toLowerCase().includes(search) || t.jan.includes(search)
         );
 
@@ -273,7 +281,7 @@ class ToyRegistry {
                     </div>
                 </div>
             `;
-            
+
             card.addEventListener('click', () => {
                 this.processJAN(toy.jan);
             });
@@ -337,7 +345,7 @@ class ToyRegistry {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `toy_registry_backup_${new Date().toISOString().slice(0,10)}.json`;
+        a.download = `toy_registry_backup_${new Date().toISOString().slice(0, 10)}.json`;
         a.click();
         URL.revokeObjectURL(url);
     }
@@ -374,7 +382,7 @@ class ToyRegistry {
         el.className = 'notification';
         el.innerText = message;
         this.elements.notificationContainer.appendChild(el);
-        
+
         setTimeout(() => {
             el.style.opacity = '0';
             setTimeout(() => el.remove(), 300);

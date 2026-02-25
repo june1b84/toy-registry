@@ -169,6 +169,23 @@ input[type="text"]:focus {
     margin-bottom: 0.25rem;
 }
 
+.edit-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed var(--accent-blue);
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.edit-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-style: solid;
+}
+
 .jan-code {
     color: var(--text-secondary);
     font-size: 0.875rem;
@@ -291,7 +308,10 @@ input[type="text"]:focus {
 }
 
 /* Buttons */
-.btn-primary, .btn-secondary, .btn-success, .btn-danger {
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-danger {
     border: none;
     border-radius: 0.75rem;
     padding: 0.75rem 1.25rem;
@@ -396,13 +416,23 @@ footer {
 }
 
 @keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 /* Responsive */
 @media (max-width: 480px) {
-    h1 { font-size: 1.75rem; }
+    h1 {
+        font-size: 1.75rem;
+    }
+
     .toy-grid {
         grid-template-columns: repeat(2, 1fr);
     }
