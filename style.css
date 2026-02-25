@@ -417,13 +417,16 @@ footer {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
+    gap: 1rem 1.25rem;
+    /* 縦・横のボタン間隔を広げる */
+    margin-bottom: 2.5rem;
+    /* 下のコピーライトとの間隔 */
 }
 
 .copyright {
     color: var(--text-secondary);
     font-size: 0.75rem;
+    padding-bottom: 2rem;
 }
 
 /* Modal */
