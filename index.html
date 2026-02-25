@@ -93,7 +93,6 @@
             <button id="manage-children-btn" class="btn-secondary">👦 子供の管理</button>
             <button id="export-data-btn" class="btn-secondary">💾 データ保存</button>
             <button id="import-data-btn" class="btn-secondary">📥 データ読込</button>
-            <button id="affiliate-settings-btn" class="btn-secondary">🔗 連携設定</button>
             <input type="file" id="import-file" style="display: none;" accept=".json">
         </div>
         <p class="copyright">&copy; 2026 Toy Registry</p>
@@ -114,42 +113,6 @@
                     <input type="text" id="new-child-name" placeholder="新しい子供の名前">
                     <button id="add-child-btn" class="btn-primary">追加</button>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- モーダル: アフィリエイト設定 -->
-    <div id="affiliate-modal" class="modal hidden">
-        <div class="modal-content card">
-            <div class="card-header">
-                <h2>🔗 アフィリエイト連携設定</h2>
-                <button id="close-affiliate-modal" class="btn-icon">×</button>
-            </div>
-            <div class="modal-body">
-                <p class="settings-help">もしもアフィリエイトの各プロモーションIDを入力してください。</p>
-
-                <div class="settings-group">
-                    <label for="affiliate-amazon-id">Amazon プロモーションID</label>
-                    <input type="text" id="affiliate-amazon-id" placeholder="例: 1234567">
-                </div>
-
-                <div class="settings-group">
-                    <label for="affiliate-rakuten-id">楽天 プロモーションID</label>
-                    <input type="text" id="affiliate-rakuten-id" placeholder="例: 1234567">
-                </div>
-
-                <div class="settings-group">
-                    <label for="affiliate-yahoo-id">Yahoo! プロモーションID</label>
-                    <input type="text" id="affiliate-yahoo-id" placeholder="例: 1234567">
-                </div>
-
-                <div class="settings-tip">
-                    <p>※IDを保存すると商品検索結果にリンクが表示されます。</p>
-                    <p>※未入力のモールはリンクが表示されません。</p>
-                </div>
-            </div>
-            <div class="modal-actions">
-                <button id="save-affiliate-btn" class="btn-success">設定を保存</button>
             </div>
         </div>
     </div>

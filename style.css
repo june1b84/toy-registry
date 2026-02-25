@@ -615,48 +615,6 @@ h1 {
     color: #fff;
 }
 
-/* Affiliate Settings Modal Styles */
-.settings-help {
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 1.5rem;
-}
-
-.settings-group {
-    margin-bottom: 1.25rem;
-}
-
-.settings-group label {
-    display: block;
-    font-size: 0.8rem;
-    margin-bottom: 0.5rem;
-    color: var(--primary);
-}
-
-.settings-group input {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    font-family: inherit;
-}
-
-.settings-tip {
-    background: rgba(56, 189, 248, 0.1);
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    margin-top: 1.5rem;
-    border-left: 3px solid var(--primary);
-}
-
-.settings-tip p {
-    font-size: 0.7rem;
-    margin: 0.25rem 0;
-    color: rgba(255, 255, 255, 0.6);
-}
-
 /* Affiliate Notice (Optional/Subtle) */
 #product-link-container::after {
     content: "※各モールの検索結果を確認できます";

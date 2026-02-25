@@ -6,15 +6,17 @@ class ToyRegistry {
     constructor() {
         this.data = {
             children: ["りつ", "れい", "そう"],
-            toys: [],
-            affiliate: {
-                amazon: "",
-                rakuten: "",
-                yahoo: ""
-            }
+            toys: []
         };
         this.html5QrCode = null;
         this.scannerActive = false;
+
+        // アフィリエイト設定（ハードコーディング）
+        this.AFFILIATE = {
+            amazon: { a_id: "614065", p_id: "170" },
+            rakuten: { a_id: "614062", p_id: "54" },
+            yahoo: { a_id: "1003440", p_id: "1225" }
+        };
 
         // Yahoo!ショッピングAPIのクライアントID
         this.YAHOO_APP_ID = "dmVyPTIwMjUwNyZpZD1uRUV1YzVWUlJtJmhhc2g9TW1ZMFpqUmpabVF5TUdJNE5UazVaUQ";
@@ -43,14 +45,6 @@ class ToyRegistry {
             importDataBtn: document.getElementById('import-data-btn'),
             importFile: document.getElementById('import-file'),
             notificationContainer: document.getElementById('notification-container'),
-            // アフィリエイト関連
-            affiliateSettingsBtn: document.getElementById('affiliate-settings-btn'),
-            affiliateModal: document.getElementById('affiliate-modal'),
-            closeAffiliateModal: document.getElementById('close-affiliate-modal'),
-            saveAffiliateBtn: document.getElementById('save-affiliate-btn'),
-            amazonIdInput: document.getElementById('affiliate-amazon-id'),
-            rakutenIdInput: document.getElementById('affiliate-rakuten-id'),
-            yahooIdInput: document.getElementById('affiliate-yahoo-id'),
             productLinkContainer: document.getElementById('product-link-container')
         };
 
@@ -74,7 +68,6 @@ class ToyRegistry {
                 // 互換性チェック
                 if (!this.data.children) this.data.children = ["りつ", "れい", "そう"];
                 if (!this.data.toys) this.data.toys = [];
-                if (!this.data.affiliate) this.data.affiliate = { amazon: "", rakuten: "", yahoo: "" };
             } catch (e) {
                 console.error("データの読み込みに失敗しました", e);
             }
@@ -126,31 +119,6 @@ class ToyRegistry {
         this.elements.exportDataBtn.addEventListener('click', () => this.exportData());
         this.elements.importDataBtn.addEventListener('click', () => this.elements.importFile.click());
         this.elements.importFile.addEventListener('change', (e) => this.importData(e));
-
-        // アフィリエイト設定
-        this.elements.affiliateSettingsBtn.addEventListener('click', () => this.openAffiliateModal());
-        this.elements.closeAffiliateModal.addEventListener('click', () => {
-            this.elements.affiliateModal.classList.add('hidden');
-        });
-        this.elements.saveAffiliateBtn.addEventListener('click', () => this.saveAffiliateSettings());
-    }
-
-    openAffiliateModal() {
-        this.elements.amazonIdInput.value = this.data.affiliate.amazon || "";
-        this.elements.rakutenIdInput.value = this.data.affiliate.rakuten || "";
-        this.elements.yahooIdInput.value = this.data.affiliate.yahoo || "";
-        this.elements.affiliateModal.classList.remove('hidden');
-    }
-
-    saveAffiliateSettings() {
-        this.data.affiliate = {
-            amazon: this.elements.amazonIdInput.value.trim(),
-            rakuten: this.elements.rakutenIdInput.value.trim(),
-            yahoo: this.elements.yahooIdInput.value.trim()
-        };
-        this.saveData();
-        this.elements.affiliateModal.classList.add('hidden');
-        this.showNotification("アフィリエイト設定を保存しました");
     }
 
     // --- スキャン機能 ---
@@ -240,7 +208,7 @@ class ToyRegistry {
                 color: '#ff0033',
                 icon: 'https://shopping.yahoo.co.jp/favicon.ico',
                 baseUrl: yahooDirectUrl || `https://shopping.yahoo.co.jp/search?p=${jan}`,
-                p_id: '1225' // もしもYahooプロモーションID (デフォルト例)
+                m_id: '1'
             },
             {
                 name: 'Amazon',
@@ -248,7 +216,7 @@ class ToyRegistry {
                 color: '#ff9900',
                 icon: 'https://www.amazon.co.jp/favicon.ico',
                 baseUrl: `https://www.amazon.co.jp/s?k=${jan}`,
-                p_id: '116' // もしもAmazonプロモーションID (デフォルト例)
+                m_id: '1'
             },
             {
                 name: '楽天市場',
@@ -256,7 +224,7 @@ class ToyRegistry {
                 color: '#bf0000',
                 icon: 'https://www.rakuten.co.jp/favicon.ico',
                 baseUrl: `https://search.rakuten.co.jp/search/mall/${jan}/`,
-                p_id: '54' // もしも楽天プロモーションID (デフォルト例)
+                m_id: '1'
             }
         ];
 
@@ -264,22 +232,19 @@ class ToyRegistry {
         wrapper.className = 'mall-links-wrapper';
 
         malls.forEach(mall => {
-            const userPId = this.data.affiliate[mall.id];
-            // IDが設定されている場合のみ表示（または全表示するかは好みだが、ユーザーの要望は選べるようにすること）
-            // ここでは設定されているものだけ、あるいは設定画面があることを考慮して全表示し、IDがあればアフィ化する
+            const config = this.AFFILIATE[mall.id];
+            // もしもアフィリエイトのリンク生成
+            // 形式: https://af.moshimo.com/af/c/click?a_id=[A_ID]&p_id=[P_ID]&pc_id=[PC_ID]&m_id=[M_ID]&url=[ENCODED_URL]
+            // 今回いただいた情報を元に pc_id は p_id と同じもの、または固定値として扱う
+            // Amazon: p_id=170, pc_id=185
+            // 楽天: p_id=54, pc_id=54
+            // Yahoo: p_id=1225, pc_id=1925
 
-            let finalUrl = mall.baseUrl;
-            if (userPId) {
-                // もしもアフィリエイトの簡易検索・通常リンク形式に変換
-                // 形式: https://af.moshimo.com/af/c/click?a_id=[A_ID]&p_id=[P_ID]&pc_id=54&m_id=[M_ID]&url=[ENCODED_URL]
-                // ※本来は m_id 等も必要だが、簡易的には検索ページへの誘導が主
-                // 今回はシンプルに、IDがある場合はそのIDをパラメータに含めるか、
-                // もしも側で生成された完成済みURLを模倣する形にする
-                // 実際には a_id (会員番号) が共通で p_id が各モール。
-                // 会員番号をa_idとして保存してもらい、p_idは各モール固定(Moshimo公式)と仮定
-                const aId = userPId; // ユーザーが入力したIDをaIdとして扱う
-                finalUrl = `https://af.moshimo.com/af/c/click?a_id=${aId}&p_id=${mall.p_id}&pc_id=54&m_id=1&url=${encodeURIComponent(mall.baseUrl)}`;
-            }
+            let pc_id = config.p_id;
+            if (mall.id === 'amazon') pc_id = '185';
+            if (mall.id === 'yahoo') pc_id = '1925';
+
+            const finalUrl = `https://af.moshimo.com/af/c/click?a_id=${config.a_id}&p_id=${config.p_id}&pc_id=${pc_id}&m_id=${mall.m_id}&url=${encodeURIComponent(mall.baseUrl)}`;
 
             const link = document.createElement('a');
             link.href = finalUrl;
