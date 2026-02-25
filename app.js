@@ -131,7 +131,7 @@ class ToyRegistry {
         const config = {
             fps: 10,
             qrbox: qrboxFunction,
-            aspectRatio: 1.0 // 広角で捉える
+            aspectRatio: 1.77 // 横長にして縦の占有を減らす（16:9に近い比率）
         };
 
         this.html5QrCode.start(
