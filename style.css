@@ -366,7 +366,7 @@ input.edit-input {
     color: var(--text-primary);
 }
 
-.btn-s.result-actions {
+.result-actions {
     display: flex;
     gap: 1rem;
     margin-top: 1rem;

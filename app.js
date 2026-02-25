@@ -91,6 +91,7 @@ class ToyRegistry {
         // 検索結果パネルを閉じる
         this.elements.closeResult.addEventListener('click', () => {
             this.elements.resultPanel.classList.add('hidden');
+            this.currentProcessingJan = null; // 閉じたらリセット
         });
 
         // リストに追加ボタン
@@ -165,6 +166,10 @@ class ToyRegistry {
     // --- 商品処理 ---
 
     async processJAN(jan) {
+        // 同じJANコードを連続で処理しない（スキャナーの重複読み取り防止）
+        if (this.currentProcessingJan === jan) return;
+        this.currentProcessingJan = jan;
+
         // 重複チェック
         const existingToy = this.data.toys.find(t => t.jan === jan);
 
@@ -371,6 +376,7 @@ class ToyRegistry {
         this.saveData();
         this.renderToyList();
         this.elements.resultPanel.classList.add('hidden');
+        this.currentProcessingJan = null; // リセット
         this.showNotification("保存しました！");
     }
 
@@ -387,6 +393,7 @@ class ToyRegistry {
             this.saveData();
             this.renderToyList();
             this.elements.resultPanel.classList.add('hidden');
+            this.currentProcessingJan = null; // リセット
             this.showNotification("削除しました");
         }
     }
