@@ -92,6 +92,7 @@ class ToyRegistry {
         this.elements.closeResult.addEventListener('click', () => {
             this.elements.resultPanel.classList.add('hidden');
             this.currentProcessingJan = null; // 閉じたらリセット
+            this.alreadyNotified = false; // 通知フラグもリセット
         });
 
         // リストに追加ボタン
@@ -195,6 +196,15 @@ class ToyRegistry {
         // マルチモール・詳細リンクの表示
         this.renderProductLinks(jan, info.url);
 
+        // 登録済み判定と削除ボタンの表示制御
+        if (existingToy) {
+            this.elements.deleteToyBtn.classList.remove('hidden');
+            this.elements.addToyBtn.innerText = "内容を更新";
+        } else {
+            this.elements.deleteToyBtn.classList.add('hidden');
+            this.elements.addToyBtn.innerText = "リストに保存";
+        }
+
         // 所有者テーブルの描画
         const initialOwners = existingToy ? { ...existingToy.owners } : {};
         const currentOwners = {};
@@ -204,8 +214,12 @@ class ToyRegistry {
 
         this.renderOwnerTable(currentOwners, jan);
 
-        if (existingToy) {
+        // 通知を表示（1回のみ）
+        if (existingToy && !this.alreadyNotified) {
             this.showNotification("既にリストにあるおもちゃです！");
+            this.alreadyNotified = true;
+        } else if (!existingToy) {
+            this.alreadyNotified = false;
         }
     }
 
@@ -377,6 +391,7 @@ class ToyRegistry {
         this.renderToyList();
         this.elements.resultPanel.classList.add('hidden');
         this.currentProcessingJan = null; // リセット
+        this.alreadyNotified = false; // リセット
         this.showNotification("保存しました！");
     }
 
@@ -394,6 +409,7 @@ class ToyRegistry {
             this.renderToyList();
             this.elements.resultPanel.classList.add('hidden');
             this.currentProcessingJan = null; // リセット
+            this.alreadyNotified = false; // リセット
             this.showNotification("削除しました");
         }
     }
