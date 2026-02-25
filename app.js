@@ -11,6 +11,9 @@ class ToyRegistry {
         this.html5QrCode = null;
         this.scannerActive = false;
 
+        // Yahoo!ショッピングAPIのクライアントID
+        this.YAHOO_APP_ID = "dmVyPTIwMjUwNyZpZD1uRUV1YzVWUlJtJmhhc2g9TW1ZMFpqUmpabVF5TUdJNE5UazVaUQ";
+
         // DOM要素
         this.elements = {
             reader: document.getElementById('reader'),
@@ -199,20 +202,35 @@ class ToyRegistry {
     }
 
     async fetchProductInfo(jan) {
-        // 本来は Yahoo Shopping API や Open EAN などを叩く
-        // ここではデモ用に、特定のJANコード以外は汎用的な名前を返す
+        // Yahoo!ショッピングAPI v3 (商品検索) を使用して情報を取得
+        // 注意: ブラウザからの直接実行（CORS）が制限される場合があります
+        const apiUrl = `https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid=${this.YAHOO_APP_ID}&jan_code=${jan}&results=1`;
 
-        // 擬似的な読み込み待ち
-        await new Promise(r => setTimeout(r, 600));
+        try {
+            // ローカルデモ用の特定JANコードはそのまま優先
+            const mockData = {
+                "4904810123456": { name: "トミカ No.1 日産 GT-R", image: "https://www.takaratomy.co.jp/products/tomica/lineup/regular/img/001.jpg" },
+                "4904810123457": { name: "トミカ No.2 SUBARU WRX S4 STI Sport R EX", image: "https://www.takaratomy.co.jp/products/tomica/lineup/regular/img/002.jpg" }
+            };
+            if (mockData[jan]) return mockData[jan];
 
-        const mockData = {
-            "4904810123456": { name: "トミカ No.1 日産 GT-R", image: "https://www.takaratomy.co.jp/products/tomica/lineup/regular/img/001.jpg" },
-            "4904810123457": { name: "トミカ No.2 SUBARU WRX S4 STI Sport R EX", image: "https://www.takaratomy.co.jp/products/tomica/lineup/regular/img/002.jpg" }
-        };
+            const response = await fetch(apiUrl, { mode: 'cors' });
+            if (!response.ok) throw new Error("APIレスポンスエラー");
 
-        if (mockData[jan]) return mockData[jan];
+            const data = await response.json();
 
-        // 汎用(トミカを想定)
+            if (data.hits && data.hits.length > 0) {
+                const item = data.hits[0];
+                return {
+                    name: item.name,
+                    image: item.image.medium || item.image.small || `https://placehold.jp/24/333333/ffffff/200x200.png?text=Toy+${jan}`
+                };
+            }
+        } catch (error) {
+            console.warn("API連携に失敗しました（CORS制限またはネットワークエラー）。手動入力をご利用ください。", error);
+        }
+
+        // 取得失敗または制限時は汎用的な名前を返す（手書き編集でカバー）
         return {
             name: `商品情報 (JAN: ${jan})`,
             image: `https://placehold.jp/24/333333/ffffff/200x200.png?text=Toy+${jan}`
