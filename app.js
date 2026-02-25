@@ -13,9 +13,9 @@ class ToyRegistry {
 
         // アフィリエイト設定（ハードコーディング）
         this.AFFILIATE = {
-            amazon: { a_id: "614065", p_id: "170" },
-            rakuten: { a_id: "614062", p_id: "54" },
-            yahoo: { a_id: "1003440", p_id: "1225" }
+            amazon: { a_id: "614065", p_id: "170", pc_id: "185", pl_id: "4065" },
+            rakuten: { a_id: "614062", p_id: "54", pc_id: "54", pl_id: "616" },
+            yahoo: { a_id: "1003440", p_id: "1225", pc_id: "1925", pl_id: "19142" }
         };
 
         // Yahoo!ショッピングAPIのクライアントID
@@ -207,24 +207,21 @@ class ToyRegistry {
                 id: 'yahoo',
                 color: '#ff0033',
                 icon: 'https://shopping.yahoo.co.jp/favicon.ico',
-                baseUrl: yahooDirectUrl || `https://shopping.yahoo.co.jp/search?p=${jan}`,
-                m_id: '1'
+                baseUrl: yahooDirectUrl || `https://shopping.yahoo.co.jp/search?p=${jan}`
             },
             {
                 name: 'Amazon',
                 id: 'amazon',
                 color: '#ff9900',
                 icon: 'https://www.amazon.co.jp/favicon.ico',
-                baseUrl: `https://www.amazon.co.jp/s?k=${jan}`,
-                m_id: '1'
+                baseUrl: `https://www.amazon.co.jp/s?k=${jan}`
             },
             {
                 name: '楽天市場',
                 id: 'rakuten',
                 color: '#bf0000',
                 icon: 'https://www.rakuten.co.jp/favicon.ico',
-                baseUrl: `https://search.rakuten.co.jp/search/mall/${jan}/`,
-                m_id: '1'
+                baseUrl: `https://search.rakuten.co.jp/search/mall/${jan}/`
             }
         ];
 
@@ -234,17 +231,9 @@ class ToyRegistry {
         malls.forEach(mall => {
             const config = this.AFFILIATE[mall.id];
             // もしもアフィリエイトのリンク生成
-            // 形式: https://af.moshimo.com/af/c/click?a_id=[A_ID]&p_id=[P_ID]&pc_id=[PC_ID]&m_id=[M_ID]&url=[ENCODED_URL]
-            // 今回いただいた情報を元に pc_id は p_id と同じもの、または固定値として扱う
-            // Amazon: p_id=170, pc_id=185
-            // 楽天: p_id=54, pc_id=54
-            // Yahoo: p_id=1225, pc_id=1925
+            // 形式: https://af.moshimo.com/af/c/click?a_id=[A_ID]&p_id=[P_ID]&pc_id=[PC_ID]&pl_id=[PL_ID]&url=[ENCODED_URL]
 
-            let pc_id = config.p_id;
-            if (mall.id === 'amazon') pc_id = '185';
-            if (mall.id === 'yahoo') pc_id = '1925';
-
-            const finalUrl = `https://af.moshimo.com/af/c/click?a_id=${config.a_id}&p_id=${config.p_id}&pc_id=${pc_id}&m_id=${mall.m_id}&url=${encodeURIComponent(mall.baseUrl)}`;
+            const finalUrl = `https://af.moshimo.com/af/c/click?a_id=${config.a_id}&p_id=${config.p_id}&pc_id=${config.pc_id}&pl_id=${config.pl_id}&url=${encodeURIComponent(mall.baseUrl)}`;
 
             const link = document.createElement('a');
             link.href = finalUrl;
