@@ -91,8 +91,7 @@ class ToyRegistry {
         // 検索結果パネルを閉じる
         this.elements.closeResult.addEventListener('click', () => {
             this.elements.resultPanel.classList.add('hidden');
-            this.currentProcessingJan = null; // 閉じたらリセット
-            this.alreadyNotified = false; // 通知フラグもリセット
+            this.resetScannerState();
         });
 
         // リストに追加ボタン
@@ -390,8 +389,7 @@ class ToyRegistry {
         this.saveData();
         this.renderToyList();
         this.elements.resultPanel.classList.add('hidden');
-        this.currentProcessingJan = null; // リセット
-        this.alreadyNotified = false; // リセット
+        this.resetScannerState();
         this.showNotification("保存しました！");
     }
 
@@ -408,10 +406,18 @@ class ToyRegistry {
             this.saveData();
             this.renderToyList();
             this.elements.resultPanel.classList.add('hidden');
-            this.currentProcessingJan = null; // リセット
-            this.alreadyNotified = false; // リセット
+            this.resetScannerState();
             this.showNotification("削除しました");
         }
+    }
+
+    resetScannerState() {
+        this.currentProcessingJan = null;
+        this.alreadyNotified = false;
+        // iPhoneの一部ブラウザでスキャナーが停止したようになるのを防ぐため、少し待ってから判定をクリア
+        setTimeout(() => {
+            this.currentProcessingJan = null;
+        }, 500);
     }
 
     // --- 一覧描画 ---
