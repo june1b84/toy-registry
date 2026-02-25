@@ -183,19 +183,21 @@ input[type="text"]:focus {
     margin-left: 0.2rem;
 }
 
-.edit-input {
+input.edit-input {
     width: 100%;
     background: #fff;
     /* 白背景にしてハッキリさせる */
     border: 2px solid var(--accent-blue);
     border-radius: 0.75rem;
     padding: 0.8rem 1rem;
-    color: #1e293b;
-    /* 文字色は濃く */
+    color: #0f172a !important;
+    /* 文字色は濃く（優先順位を上げて確実に反映） */
     font-size: 1.1rem;
     font-weight: 700;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     -webkit-appearance: none;
+    appearance: none;
+    /* 標準プロパティも追加 */
     /* iOSのデフォルトスタイル無効化 */
 }
 
