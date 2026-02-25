@@ -96,19 +96,15 @@ h2 {
     position: relative;
 }
 
-#reader video,
-#reader canvas {
+#reader video {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 }
 
 #reader {
     width: 100% !important;
+    height: 100% !important;
     border: none !important;
 }
 
