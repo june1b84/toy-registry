@@ -172,6 +172,19 @@ class ToyRegistry {
         this.renderProductNameEditor(info.name);
         this.elements.productImage.src = info.image;
 
+        // 商品詳細リンクの表示（アフィリエイト対応可能な導線）
+        const linkContainer = document.getElementById('product-link-container');
+        if (info.url) {
+            linkContainer.innerHTML = `
+                <a href="${info.url}" target="_blank" rel="noopener noreferrer" class="yahoo-link-btn">
+                    <img src="https://s.yimg.jp/c/logo/f/2.0/shopping_r_64_2x.png" alt="Yahoo!ショッピング">
+                    <span>Yahoo!ショッピングで見る</span>
+                </a>
+            `;
+        } else {
+            linkContainer.innerHTML = '';
+        }
+
         // 所有者テーブルの描画
         const initialOwners = existingToy ? { ...existingToy.owners } : {};
         const currentOwners = {};
@@ -228,17 +241,19 @@ class ToyRegistry {
                 const item = data.hits[0];
                 return {
                     name: item.name,
-                    image: item.image.medium || item.image.small || `https://placehold.jp/24/333333/ffffff/200x200.png?text=Toy+${jan}`
+                    image: item.image.medium || item.image.small || `https://placehold.jp/24/333333/ffffff/200x200.png?text=Toy+${jan}`,
+                    url: item.url
                 };
             }
         } catch (error) {
             console.warn("API連携に失敗しました（CORS制限またはNWエラー）。", error);
         }
 
-        // 取得失敗時は汎用的な名前を返す
+        // 取得失敗時はURLなしで返す
         return {
             name: `商品情報 (JAN: ${jan})`,
-            image: `https://placehold.jp/24/333333/ffffff/200x200.png?text=Toy+${jan}`
+            image: `https://placehold.jp/24/333333/ffffff/200x200.png?text=Toy+${jan}`,
+            url: null
         };
     }
 

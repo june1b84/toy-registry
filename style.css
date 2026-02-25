@@ -565,6 +565,50 @@ h1 {
     }
 }
 
+/* Yahoo! Shopping Link */
+.yahoo-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #fff;
+    color: #333;
+    padding: 0.6rem 1rem;
+    border-radius: 2rem;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin: 0.5rem 0 1rem 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+    border: 1px solid #ddd;
+}
+
+.yahoo-link-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background: #fdfdfd;
+}
+
+.yahoo-link-btn img {
+    height: 18px;
+    width: auto;
+}
+
+.yahoo-link-btn span {
+    color: #ff0033;
+    /* Yahoo Red */
+}
+
+/* Affiliate Notice (Optional/Subtle) */
+#product-link-container::after {
+    content: "※価格や在庫をYahoo!ショッピングで確認できます";
+    display: block;
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: -0.25rem;
+    margin-bottom: 1rem;
+}
+
 /* Responsive */
 @media (max-width: 480px) {
     h1 {
