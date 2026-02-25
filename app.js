@@ -158,13 +158,20 @@ class ToyRegistry {
         const existingToy = this.data.toys.find(t => t.jan === jan);
 
         this.elements.resultPanel.classList.remove('hidden');
-        this.elements.productName.innerHTML = '検索中...'; // innerTextからinnerHTMLに変更（後でinputを入れるため）
+        this.elements.productName.innerHTML = `
+            <div class="loading-spinner-container">
+                <div class="spinner"></div>
+                <span>商品を探しています...</span>
+            </div>
+        `;
         this.elements.productJan.innerText = jan;
         this.elements.productImage.src = "";
+        this.elements.addToyBtn.disabled = true; // 検索中はボタン無効化
 
         // APIから情報取得
         const info = await this.fetchProductInfo(jan);
 
+        this.elements.addToyBtn.disabled = false;
         this.renderProductNameEditor(info.name);
         this.elements.productImage.src = info.image;
 
@@ -203,9 +210,9 @@ class ToyRegistry {
 
     async fetchProductInfo(jan) {
         // Yahoo!ショッピングAPI v3 (商品検索) を使用して情報を取得
-        // ブラウザのCORS制限を回避するため、allorigins.winプロキシを経由させる
+        // より高速な corsproxy.io を使用
         const yahooUrl = `https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid=${this.YAHOO_APP_ID}&jan_code=${jan}&results=1`;
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooUrl)}`;
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(yahooUrl)}`;
 
         try {
             // ローカルデモ用の特定JANコードはそのまま優先
@@ -216,11 +223,9 @@ class ToyRegistry {
             if (mockData[jan]) return mockData[jan];
 
             const response = await fetch(proxyUrl);
-            if (!response.ok) throw new Error("プロキシサーバーエラー");
+            if (!response.ok) throw new Error("APIエラー");
 
-            const proxyData = await response.json();
-            // alloriginsは結果を文字列として 'contents' に入れるためパースが必要
-            const data = JSON.parse(proxyData.contents);
+            const data = await response.json();
 
             if (data.hits && data.hits.length > 0) {
                 const item = data.hits[0];
@@ -230,7 +235,7 @@ class ToyRegistry {
                 };
             }
         } catch (error) {
-            console.warn("API連携に失敗しました（プロキシ経由でも制限またはNWエラー）。", error);
+            console.warn("API連携に失敗しました（CORS制限またはNWエラー）。", error);
         }
 
         // 取得失敗時は汎用的な名前を返す

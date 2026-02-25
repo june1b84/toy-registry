@@ -449,6 +449,114 @@ footer {
     }
 }
 
+/* UI Premium Upgrades */
+
+/* Loading Spinner */
+.loading-spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid var(--accent-blue);
+    border-radius: 50%;
+    animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Animations */
+.card,
+.toy-card {
+    animation: fadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Bubbly Premium Design */
+.card {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.5) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+}
+
+.toy-card {
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.4);
+    background: var(--card-bg);
+}
+
+.toy-card:hover {
+    transform: scale(1.03) translateY(-4px);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+}
+
+.btn-primary:active,
+.btn-secondary:active,
+.btn-success:active {
+    transform: scale(0.95);
+}
+
+/* Owner Table Polish */
+.owner-row {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.owner-check {
+    transition: all 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.owner-check:active {
+    transform: scale(0.8);
+}
+
+.owner-check.has {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px var(--success);
+}
+
+/* Header Animation */
+h1 {
+    animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+    from {
+        filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.3));
+    }
+
+    to {
+        filter: drop-shadow(0 0 15px rgba(192, 132, 252, 0.6));
+    }
+}
+
 /* Responsive */
 @media (max-width: 480px) {
     h1 {
